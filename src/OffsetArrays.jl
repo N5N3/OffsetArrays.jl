@@ -853,6 +853,13 @@ end
 import Adapt
 Adapt.adapt_structure(to, O::OffsetArray) = parent_call(x -> Adapt.adapt(to, x), O)
 
+if isdefined(Adapt, :backend)
+    Adapt.backend(x::OffsetArray) = Adapt.backend(x.parent)
+end
+
+# OffsetArray's BroadcastStyle
+Broadcast.BroadcastStyle(T::Type{<:OffsetArray}) = Broadcast.BroadcastStyle(fieldtype(T, 1))
+
 if Base.VERSION >= v"1.4.2"
     include("precompile.jl")
     _precompile_()
